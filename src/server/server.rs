@@ -42,6 +42,8 @@ impl Server {
     async fn handle_request(http_request: HttpRequest, directory: &str) -> Result<HttpResponse, ()> {
         let mut headers = HttpHeaders::new();
 
+        // Fuck, this is too ugly!
+
         let status = match http_request.path.as_str() {
             "/" => HttpResponseStatus::Ok,
             path if path.starts_with("/echo/") => HttpResponseStatus::Ok,

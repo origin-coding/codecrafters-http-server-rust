@@ -22,6 +22,7 @@ impl FromStr for HttpRequest {
         // Parse the first line.
         let method = parts.next().and_then(HttpRequestMethod::from_str).ok_or(())?;
         let path = parts.next().unwrap().to_string();
+        // What is a version, I forgot to use it.
         let version = parts.next().and_then(HttpVersion::from_str).unwrap_or(HttpVersion::V1_1);
 
         // Parse headers.
