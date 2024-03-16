@@ -6,6 +6,7 @@ pub enum HttpHeaderName {
     Authorization,
     ContentType,
     ContentLength,
+    UserAgent,
     // 其他的请求头名称
     Custom(String),
 }
@@ -16,6 +17,7 @@ impl HttpHeaderName {
             "Authorization" => HttpHeaderName::Authorization,
             "Content-Type" => HttpHeaderName::ContentType,
             "Content-Length" => HttpHeaderName::ContentLength,
+            "User-Agent" => HttpHeaderName::UserAgent,
             // 其他预定义的请求头名称...
             _ => HttpHeaderName::Custom(s.to_string()),
         }
@@ -28,6 +30,7 @@ impl Display for HttpHeaderName {
             HttpHeaderName::Authorization => write!(f, "Authorization"),
             HttpHeaderName::ContentType => write!(f, "Content-Type"),
             HttpHeaderName::ContentLength => write!(f, "Content-Length"),
+            HttpHeaderName::UserAgent => write!(f, "User-Agent"),
             HttpHeaderName::Custom(s) => write!(f, "{}", s),
         }
     }

@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
-use crate::http::{HttpHeaders, HttpRequest, HttpResponse, HttpResponseStatus, HttpVersion};
+use crate::http::{HttpHeaderName, HttpHeaders, HttpRequest, HttpResponse, HttpResponseStatus, HttpVersion};
 use crate::http::HttpHeaderName::{ContentLength, ContentType};
 
 pub struct Server {
@@ -38,12 +38,19 @@ impl Server {
         let status = match http_request.path.as_str() {
             "/" => HttpResponseStatus::Ok,
             path if path.starts_with("/echo/") => HttpResponseStatus::Ok,
+            path if path.starts_with("/user-agent") => HttpResponseStatus::Ok,
             _ => HttpResponseStatus::NotFound,
         };
 
         let content = match http_request.path.as_str() {
             path if path.starts_with("/echo/") => {
                 let content = &path["/echo/".len()..];
+                headers.insert(ContentType, "text/plain".to_string());
+                headers.insert(ContentLength, content.len().to_string());
+                content
+            }
+            path if path.starts_with("/user-agent") => {
+                let content = http_request.headers.get(&HttpHeaderName::UserAgent).unwrap();
                 headers.insert(ContentType, "text/plain".to_string());
                 headers.insert(ContentLength, content.len().to_string());
                 content
