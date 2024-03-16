@@ -73,11 +73,12 @@ impl Server {
             path if path.starts_with("/files/") && http_request.method == HttpRequestMethod::Get => {
                 let path = Path::new(directory).join(&path[7..]);
                 let path_str = path.to_str().unwrap();
-                headers.insert(ContentType, "application/octet-stream".to_string());
                 let file_content = match metadata(path_str).await {
                     Ok(_) => read(path_str).await.unwrap(),
                     Err(_) => "".as_bytes().to_vec(),
                 };
+                headers.insert(ContentType, "application/octet-stream".to_string());
+                headers.insert(ContentLength, file_content.len().to_string());
                 file_content
             }
             _ => "".as_bytes().to_vec()
