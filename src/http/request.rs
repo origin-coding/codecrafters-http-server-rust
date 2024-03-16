@@ -16,7 +16,7 @@ impl FromStr for HttpRequest {
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
         let mut lines = value.lines();
-        let request_line = lines.next().unwrap();
+        let request_line = lines.next().unwrap_or(value);
         let mut parts = request_line.split_whitespace();
 
         // Parse the first line.
