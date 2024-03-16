@@ -3,6 +3,7 @@ use std::fmt::{Display, Formatter};
 pub enum HttpResponseStatus {
     Ok,
     NotFound,
+    Created,
 }
 
 impl Display for HttpResponseStatus {
@@ -10,6 +11,7 @@ impl Display for HttpResponseStatus {
         match self {
             HttpResponseStatus::Ok => write!(f, "200 OK"),
             HttpResponseStatus::NotFound => write!(f, "404 Not Found"),
+            HttpResponseStatus::Created => write!(f, "201 Created")
         }
     }
 }

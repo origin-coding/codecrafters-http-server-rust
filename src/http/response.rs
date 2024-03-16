@@ -9,13 +9,13 @@ pub struct HttpResponse {
     pub headers: HttpHeaders,
     // This needs to be Vec<u8> for binary body content.
     // But we will use String for simplicity.
-    pub body: String,
+    pub body: Vec<u8>,
 }
 
 impl Display for HttpResponse {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} {}\r\n", self.version, self.status)?;
         write!(f, "{}", self.headers)?;
-        write!(f, "\r\n{}", self.body)
+        write!(f, "\r\n{}", self.body.iter().map(|&c| c as char).collect::<String>())
     }
 }
