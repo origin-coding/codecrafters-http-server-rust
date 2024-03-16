@@ -2,6 +2,7 @@ use std::str::FromStr;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use crate::http::{HttpHeaders, HttpRequest, HttpResponse, HttpResponseStatus, HttpVersion};
+use crate::http::HttpHeaderName::{ContentLength, ContentType};
 
 pub struct Server {
     listener: TcpListener,
@@ -32,6 +33,8 @@ impl Server {
     }
 
     fn handle_request(http_request: HttpRequest) -> Result<HttpResponse, ()> {
+        let mut headers = HttpHeaders::new();
+
         let status = match http_request.path.as_str() {
             "/" => HttpResponseStatus::Ok,
             path if path.starts_with("/echo/") => HttpResponseStatus::Ok,
@@ -41,6 +44,8 @@ impl Server {
         let content = match http_request.path.as_str() {
             path if path.starts_with("/echo/") => {
                 let content = &path["/echo/".len()..];
+                headers.insert(ContentType, "text/plain".to_string());
+                headers.insert(ContentLength, content.len().to_string());
                 content
             }
             _ => ""
