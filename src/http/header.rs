@@ -5,6 +5,7 @@ use std::fmt::{Display, Formatter};
 pub enum HttpHeaderName {
     Authorization,
     ContentType,
+    ContentLength,
     // 其他的请求头名称
     Custom(String),
 }
@@ -14,6 +15,7 @@ impl HttpHeaderName {
         match s {
             "Authorization" => HttpHeaderName::Authorization,
             "Content-Type" => HttpHeaderName::ContentType,
+            "Content-Length" => HttpHeaderName::ContentLength,
             // 其他预定义的请求头名称...
             _ => HttpHeaderName::Custom(s.to_string()),
         }
@@ -25,6 +27,7 @@ impl Display for HttpHeaderName {
         match self {
             HttpHeaderName::Authorization => write!(f, "Authorization"),
             HttpHeaderName::ContentType => write!(f, "Content-Type"),
+            HttpHeaderName::ContentLength => write!(f, "Content-Length"),
             HttpHeaderName::Custom(s) => write!(f, "{}", s),
         }
     }
