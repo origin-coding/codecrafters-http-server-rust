@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::str::FromStr;
 
-use tokio::fs::{metadata, read};
+use tokio::fs::{metadata, read, write};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 
@@ -54,6 +54,9 @@ impl Server {
                     HttpResponseStatus::NotFound
                 }
             }
+            path if path.starts_with("/files/") && http_request.method == HttpRequestMethod::Post => {
+                HttpResponseStatus::Created
+            }
             _ => HttpResponseStatus::NotFound,
         };
 
@@ -80,6 +83,15 @@ impl Server {
                 headers.insert(ContentType, "application/octet-stream".to_string());
                 headers.insert(ContentLength, file_content.len().to_string());
                 file_content
+            }
+            path if path.starts_with("/files/") && http_request.method == HttpRequestMethod::Post => {
+                let path = Path::new(directory).join(&path[7..]);
+                let path_str = path.to_str().unwrap();
+                let file_content = http_request.body;
+                write(path_str, file_content).await.unwrap();
+                headers.insert(ContentType, "text/plain".to_string());
+                headers.insert(ContentLength, "".len().to_string());
+                "".as_bytes().to_vec()
             }
             _ => "".as_bytes().to_vec()
         };
