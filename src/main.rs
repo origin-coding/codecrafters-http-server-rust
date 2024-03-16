@@ -21,7 +21,7 @@ async fn main() {
     loop {
         let (stream, _) = listener.accept().await.unwrap();
         let server = Server::new(stream).await;
-        let future = server.run(directory.clone().unwrap());
+        let future = server.run(directory.clone().unwrap_or("".to_string()));
         tokio::spawn(future);
     }
 }
